@@ -34,7 +34,7 @@ jobs:
         env:
           REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
           REPOSITORY: "wizlabsvulnrepo"
-          COMMIT_SHA: ${{ github.sha }}
+          COMMIT_SHA: "${{ github.sha }}-${{ github.run_number }}"
         run: |
           cd dist
           IMAGE_TAG=$REGISTRY/$REPOSITORY:${COMMIT_SHA}
@@ -54,7 +54,7 @@ jobs:
         env:
           REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
           REPOSITORY: "wizlabsvulnrepo"
-          COMMIT_SHA: ${{ github.sha }}
+          COMMIT_SHA: "${{ github.sha }}-${{ github.run_number }}"
           ODLUSER: ${{ secrets.ODLUSER }}
 
       - name: Configure AWS credentials
@@ -73,7 +73,7 @@ jobs:
         env:
           REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
           REPOSITORY: "wizlabsvulnrepo"
-          COMMIT_SHA: ${{ github.sha }}
+          COMMIT_SHA: "${{ github.sha }}-${{ github.run_number }}"
         run: |
           cd dist
           IMAGE_TAG=$REGISTRY/$REPOSITORY:${COMMIT_SHA}
@@ -83,7 +83,7 @@ jobs:
         env:
           REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
           REPOSITORY: "wizlabsvulnrepo"
-          COMMIT_SHA: ${{ github.sha }}
+          COMMIT_SHA: "${{ github.sha }}-${{ github.run_number }}"
         run: |
           REPOSITORY_URI=$REGISTRY/$REPOSITORY
           IMAGE_TAG=$REPOSITORY_URI:${COMMIT_SHA}
@@ -95,11 +95,10 @@ jobs:
           AWS_REGION: "us-east-1"
           SERVICE_ARN: ${{ secrets.APP_RUNNER_SERVICE_ARN }}
           REPOSITORY: "wizlabsvulnrepo"
-          COMMIT_SHA: ${{ github.sha }}
+          COMMIT_SHA: "${{ github.sha }}-${{ github.run_number }}"
           ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
-          IMAGE_TAG: "${{ github.sha }}-${{ github.run_number }}"
         run: |
-          IMAGE_URI=$ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$REPOSITORY:$IMAGE_TAG
+          IMAGE_URI=$ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$REPOSITORY:$COMMIT_SHA
           aws apprunner update-service --service-arn $SERVICE_ARN --source-configuration "ImageRepository={ImageIdentifier=\"$IMAGE_URI\",ImageRepositoryType=\"ECR\"}"
 
       - name: Run Wiz CLI image tag
@@ -107,8 +106,7 @@ jobs:
           ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
           AWS_REGION: "us-east-1"
           REPOSITORY: "wizlabsvulnrepo"
-          COMMIT_SHA: ${{ github.sha }}
-          IMAGE_TAG: "${{ github.sha }}-${{ github.run_number }}"
+          COMMIT_SHA: "${{ github.sha }}-${{ github.run_number }}"
         run: |
-          IMAGE_URI=$ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/$REPOSITORY:$IMAGE_TAG
+          IMAGE_URI=$ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/$REPOSITORY:$COMMIT_SHA
           sudo -E ./wizcli docker tag -i $IMAGE_URI
