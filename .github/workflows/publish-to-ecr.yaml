@@ -33,7 +33,7 @@ jobs:
       - name: Build and push latest Docker image
         env:
           REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
-          REPOSITORY: "prime-website"
+          REPOSITORY: "wizlabsvulnrepo"
           COMMIT_SHA: ${{ github.sha }}
         run: |
           cd dist
@@ -53,14 +53,14 @@ jobs:
         continue-on-error: false
         env:
           REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
-          REPOSITORY: "prime-website"
+          REPOSITORY: "wizlabsvulnrepo"
           COMMIT_SHA: ${{ github.sha }}
           ODLUSER: ${{ secrets.ODLUSER }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/my-github-actions-role
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/GitHubOIDCDeploymentRole
           aws-region: us-east-1
 
       - name: Login to Amazon ECR
@@ -72,7 +72,7 @@ jobs:
       - name: Push the tagged Docker image to Amazon ECR
         env:
           REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
-          REPOSITORY: "prime-website"
+          REPOSITORY: "wizlabsvulnrepo"
           COMMIT_SHA: ${{ github.sha }}
         run: |
           cd dist
@@ -82,7 +82,7 @@ jobs:
       - name: Verify Docker image
         env:
           REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
-          REPOSITORY: "prime-website"
+          REPOSITORY: "wizlabsvulnrepo"
           COMMIT_SHA: ${{ github.sha }}
         run: |
           REPOSITORY_URI=$REGISTRY/$REPOSITORY
@@ -94,7 +94,7 @@ jobs:
         env:
           AWS_REGION: "us-east-1"
           SERVICE_ARN: ${{ secrets.APP_RUNNER_SERVICE_ARN }}
-          REPOSITORY: "prime-website"
+          REPOSITORY: "wizlabsvulnrepo"
           COMMIT_SHA: ${{ github.sha }}
           ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
         run: |
@@ -105,7 +105,7 @@ jobs:
         env:
           ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
           AWS_REGION: "us-east-1"
-          REPOSITORY: "prime-website"
+          REPOSITORY: "wizlabsvulnrepo"
           COMMIT_SHA: ${{ github.sha }}
         run: |
           IMAGE_URI=$ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/$REPOSITORY:$COMMIT_SHA
