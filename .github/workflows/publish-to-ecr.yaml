@@ -97,8 +97,9 @@ jobs:
           REPOSITORY: "wizlabsvulnrepo"
           COMMIT_SHA: ${{ github.sha }}
           ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+          IMAGE_TAG: "${{ github.sha }}-${{ github.run_number }}"
         run: |
-          IMAGE_URI=$ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$REPOSITORY:$COMMIT_SHA
+          IMAGE_URI=$ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$REPOSITORY:$IMAGE_TAG
           aws apprunner update-service --service-arn $SERVICE_ARN --source-configuration "ImageRepository={ImageIdentifier=\"$IMAGE_URI\",ImageRepositoryType=\"ECR\"}"
 
       - name: Run Wiz CLI image tag
@@ -107,6 +108,7 @@ jobs:
           AWS_REGION: "us-east-1"
           REPOSITORY: "wizlabsvulnrepo"
           COMMIT_SHA: ${{ github.sha }}
+          IMAGE_TAG: "${{ github.sha }}-${{ github.run_number }}"
         run: |
-          IMAGE_URI=$ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/$REPOSITORY:$COMMIT_SHA
+          IMAGE_URI=$ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/$REPOSITORY:$IMAGE_TAG
           sudo -E ./wizcli docker tag -i $IMAGE_URI
